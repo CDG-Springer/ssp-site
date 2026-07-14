@@ -2,12 +2,70 @@
 
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import Image from "next/image"
-import { motion } from "framer-motion"
+import { motion, AnimatePresence } from "framer-motion"
 import { useFacebookPixel } from "@/lib/hooks/useFacebookPixel"
+
+// Componente do carrossel de texto
+function TextCarousel() {
+  const texts = [
+    "Uma plataforma para a sua música ao vivo",
+    "A plataforma que conecta você aos artistas para o seu evento.",
+    "O lugar certo para contratar e oferecer shows.",
+    "A ponte entre músicos e contratantes.",
+    "Onde a música encontra o palco do seu evento.",
+    "Conectando artistas e contratantes em um só lugar.",
+    "O palco da sua música começa aqui.",
+    "Onde talento encontra oportunidade.",
+    "Mais shows, menos burocracia.",
+    "A ponte entre quem toca e quem contrata.",
+    "Seu som, nosso jeito fácil de fechar shows."
+  ]
+
+  const [currentIndex, setCurrentIndex] = useState(0)
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % texts.length)
+    }, 3000) // Muda a cada 3 segundos
+
+    return () => clearInterval(interval)
+  }, [texts.length])
+
+  return (
+    <div className="relative min-h-24 md:min-h-28 flex items-center justify-center">
+      <AnimatePresence mode="wait">
+        <motion.h1
+          key={currentIndex}
+          initial={{ opacity: 0, x: 100 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -100 }}
+          transition={{ 
+            duration: 0.6, 
+            ease: "easeInOut"
+          }}
+          className="text-4xl md:text-6xl font-bold text-center leading-tight"
+        >
+          {texts[currentIndex].includes("sua música ao vivo") ? (
+            <>
+              <span className="text-white">Uma plataforma para a </span>
+              <span className="bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent">
+                sua música ao vivo
+              </span>
+            </>
+          ) : (
+            <span className="bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent">
+              {texts[currentIndex]}
+            </span>
+          )}
+        </motion.h1>
+      </AnimatePresence>
+    </div>
+  )
+}
 
 export function Hero() {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
@@ -36,17 +94,14 @@ export function Hero() {
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="max-w-4xl mx-auto text-center"
         >
-          <motion.h1
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-            className="text-4xl md:text-6xl font-bold mb-6"
+            className="mb-6"
           >
-            <span className="text-white">Uma plataforma para a </span>
-            <span className="bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent">
-              sua música ao vivo
-            </span>
-          </motion.h1>
+            <TextCarousel />
+          </motion.div>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
